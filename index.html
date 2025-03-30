@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>英语专八估分小工具</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #ffffff;
+      color: #333333;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007acc;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+
+    input, button, select {
+      padding: 10px;
+      width: 100%;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background: #ffffff;
+      color: #333333;
+    }
+
+    button {
+      background-color: #007acc;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    .result {
+      margin-top: 20px;
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .card {
+      background: #ffffff;
+      color: #333333;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .section {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px dashed #ccc;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>英语专八估分器</h1>
+
+  <label for="modeSelect">请选择估分方式：</label>
+  <select id="modeSelect" onchange="toggleMode()">
+    <option value="byModule">按题型估分</option>
+    <option value="byTotal">直接输入总分</option>
+  </select>
+
+  <div id="moduleMode">
+    <label for="listeningFill">听力填空题（15分）：</label>
+    <input type="number" id="listeningFill" placeholder="如：12">
+
+    <label for="listeningChoice">听力选择题（10分）：</label>
+    <input type="number" id="listeningChoice" placeholder="如：8">
+
+    <label for="readingChoice">阅读选择题（14分）：</label>
+    <input type="number" id="readingChoice" placeholder="如：10">
+
+    <label for="readingShort">阅读简答题（16分）：</label>
+    <input type="number" id="readingShort" placeholder="如：12">
+
+    <label for="errorCorrection">改错题（10分）：</label>
+    <input type="number" id="errorCorrection" placeholder="如：7">
+
+    <label for="translation">翻译题（15分）：</label>
+    <input type="number" id="translation" placeholder="如：13">
+
+    <label for="writing">写作题（20分）：</label>
+    <input type="number" id="writing" placeholder="如：16">
+
+    <button onclick="calculateFinalScore()">📊 按模块计算最终分数</button>
+    <button onclick="generateCard()">🎴 生成分享卡片</button>
+  </div>
+
+  <div class="section" id="totalMode" style="display: none;">
+    <label for="totalEstimate">请输入你的总预估分（满分100）：</label>
+    <input type="number" id="totalEstimate" placeholder="如：70">
+    <button onclick="calculateFromTotal()">📈 直接估算最终成绩</button>
+    <button onclick="generateCardFromTotal()">🎴 生成分享卡片</button>
+  </div>
+
+  <div class="result" id="output" style="display: none;"></div>
+  <div class="card" id="card" style="display: none;"></div>
+
+  <script>
+    function toggleMode() {
+      const mode = document.getElementById("modeSelect").value;
+      document.getElementById("moduleMode").style.display = mode === "byModule" ? "block" : "none";
+      document.getElementById("totalMode").style.display = mode === "byTotal" ? "block" : "none";
+      document.getElementById("output").style.display = "none";
+      document.getElementById("card").style.display = "none";
+    }
+
+    function calculateFinalScore() {
+      const scores = [
+        parseFloat(document.getElementById("listeningFill").value) || 0,
+        parseFloat(document.getElementById("listeningChoice").value) || 0,
+        parseFloat(document.getElementById("readingChoice").value) || 0,
+        parseFloat(document.getElementById("readingShort").value) || 0,
+        parseFloat(document.getElementById("errorCorrection").value) || 0,
+        parseFloat(document.getElementById("translation").value) || 0,
+        parseFloat(document.getElementById("writing").value) || 0
+      ];
+      const estimatedScore = scores.reduce((a, b) => a + b, 0);
+      const X = 100 - estimatedScore;
+      const finalScore = 0.7 * (140 - X);
+      const roundedScore = Math.round(finalScore * 10) / 10;
+      const output = document.getElementById("output");
+      output.style.display = "block";
+      output.innerHTML = `你估的总原始分为 <strong>${estimatedScore}</strong>，根据玄学换算公式 <code>0.7 × (140 - X)</code>，你的最终成绩可能是 <strong>${roundedScore}</strong> 分。<br><br><em>其中 X = 100 - 原始预估分，最终成绩以官方为准。</em>`;
+    }
+
+    function calculateFromTotal() {
+      const total = parseFloat(document.getElementById("totalEstimate").value);
+      if (isNaN(total) || total < 0 || total > 100) {
+        alert("请输入 0 到 100 之间的有效预估分数。");
+        return;
+      }
+      const X = 100 - total;
+      const finalScore = 0.7 * (140 - X);
+      const roundedScore = Math.round(finalScore * 10) / 10;
+      const output = document.getElementById("output");
+      output.style.display = "block";
+      output.innerHTML = `你输入的总预估分为 <strong>${total}</strong>，根据玄学换算公式 <code>0.7 × (140 - X)</code>，你的最终成绩可能是 <strong>${roundedScore}</strong> 分。<br><br><em>其中 X = 100 - 预估分，最终成绩以官方为准。</em>`;
+    }
+
+    function generateCard() {
+      const listeningFill = parseFloat(document.getElementById("listeningFill").value) || 0;
+      const listeningChoice = parseFloat(document.getElementById("listeningChoice").value) || 0;
+      const readingChoice = parseFloat(document.getElementById("readingChoice").value) || 0;
+      const readingShort = parseFloat(document.getElementById("readingShort").value) || 0;
+      const errorCorrection = parseFloat(document.getElementById("errorCorrection").value) || 0;
+      const translation = parseFloat(document.getElementById("translation").value) || 0;
+      const writing = parseFloat(document.getElementById("writing").value) || 0;
+      const estimatedScore = listeningFill + listeningChoice + readingChoice + readingShort + errorCorrection + translation + writing;
+      const X = 100 - estimatedScore;
+      const finalScore = 0.7 * (140 - X);
+      const roundedScore = Math.round(finalScore * 10) / 10;
+      const card = document.getElementById("card");
+      card.style.display = "block";
+      card.innerHTML = `
+        <h2>🎓 我的专八玄学估分卡</h2>
+        <p>听力填空题：${listeningFill} / 15</p>
+        <p>听力选择题：${listeningChoice} / 10</p>
+        <p>阅读选择题：${readingChoice} / 14</p>
+        <p>阅读简答题：${readingShort} / 16</p>
+        <p>改错题：${errorCorrection} / 10</p>
+        <p>翻译题：${translation} / 15</p>
+        <p>写作题：${writing} / 20</p>
+        <hr>
+        <h3>🧮 原始总分：${estimatedScore}</h3>
+        <h3>📊 预测最终成绩：${roundedScore}</h3>
+        <p style="font-size: 12px; color: #555">（公式：0.7 × (140 - X)，X = 100 - 原始分）</p>
+      `;
+    }
+
+    function generateCardFromTotal() {
+      const total = parseFloat(document.getElementById("totalEstimate").value);
+      if (isNaN(total) || total < 0 || total > 100) {
+        alert("请输入有效的总预估分");
+        return;
+      }
+      const X = 100 - total;
+      const finalScore = 0.7 * (140 - X);
+      const roundedScore = Math.round(finalScore * 10) / 10;
+      const card = document.getElementById("card");
+      card.style.display = "block";
+      card.innerHTML = `
+        <h2>🎓 我的专八玄学估分卡</h2>
+        <p>总预估分：${total} / 100</p>
+        <hr>
+        <h3>📊 预测最终成绩：${roundedScore}</h3>
+        <p style="font-size: 12px; color: #555">（公式：0.7 × (140 - X)，X = 100 - 原始分）</p>
+      `;
+    }
+  </script>
+</body>
+</html>
