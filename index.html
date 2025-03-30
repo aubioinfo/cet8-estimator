@@ -148,7 +148,7 @@
       const roundedScore = Math.round(finalScore * 10) / 10;
       const output = document.getElementById("output");
       output.style.display = "block";
-      output.innerHTML = `你估的总原始分为 <strong>${estimatedScore}</strong>，根据玄学换算公式 <code>0.7 × (140 - X)</code>，你的最终成绩可能是 <strong>${roundedScore}</strong> 分。<br><br><em>其中 X = 100 - 原始预估分，最终成绩以官方为准。</em>`;
+      output.innerHTML = `你估的总原始分为 <strong>${estimatedScore}</strong>，你的最终成绩可能是 <strong>${roundedScore}</strong> 分。<br><br><em>最终成绩以官方为准。</em>`;
     }
 
     function calculateFromTotal() {
@@ -162,7 +162,7 @@
       const roundedScore = Math.round(finalScore * 10) / 10;
       const output = document.getElementById("output");
       output.style.display = "block";
-      output.innerHTML = `你输入的总预估分为 <strong>${total}</strong>，根据玄学换算公式 <code>0.7 × (140 - X)</code>，你的最终成绩可能是 <strong>${roundedScore}</strong> 分。<br><br><em>其中 X = 100 - 预估分，最终成绩以官方为准。</em>`;
+      output.innerHTML = `你输入的总预估分为 <strong>${total}</strong>，你的最终成绩可能是 <strong>${roundedScore}</strong> 分。<br><br><em>最终成绩以官方为准。</em>`;
     }
 
     function generateCard() {
@@ -191,7 +191,7 @@
         <hr>
         <h3>🧮 原始总分：${estimatedScore}</h3>
         <h3>📊 预测最终成绩：${roundedScore}</h3>
-        <p style="font-size: 12px; color: #555">（公式：0.7 × (140 - X)，X = 100 - 原始分）</p>
+        <p style="font-size: 12px; color: #555"> </p>
       `;
     }
 
@@ -211,7 +211,7 @@
         <p>总预估分：${total} / 100</p>
         <hr>
         <h3>📊 预测最终成绩：${roundedScore}</h3>
-        <p style="font-size: 12px; color: #555">（公式：0.7 × (140 - X)，X = 100 - 原始分）</p>
+        <p style="font-size: 12px; color: #555"> </p>
       `;
     }
   </script>
